@@ -1,9 +1,11 @@
 services:
-  react-app:
-    build: .
+  frontend:
+    build: 
+      context: .
+      dockerfile: packages/frontend/Dockerfile
     ports:
       - "5173:5173"
     volumes:
-      - .:/app
+      - ./packages/frontend:/app/packages/frontend
+      - /app/packages/frontend/node_modules
       - /app/node_modules
-    command: pnpm dev --host
