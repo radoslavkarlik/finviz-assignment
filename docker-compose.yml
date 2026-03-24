@@ -9,3 +9,13 @@ services:
       - ./packages/frontend:/app/packages/frontend
       - /app/packages/frontend/node_modules
       - /app/node_modules
+  backend:
+    build: 
+      context: .
+      dockerfile: packages/backend/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./packages/backend:/app/packages/backend
+      - /app/packages/backend/node_modules
+      - /app/node_modules

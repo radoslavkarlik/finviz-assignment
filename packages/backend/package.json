@@ -1,0 +1,21 @@
+{
+  "name": "@finviz-assignment/backend",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Radoslav Karlik",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "lint": "eslint .",
+    "ts": "tsc -b --noEmit",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "fast-xml-parser": "^5.5.9"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "tsx": "^4.19.4"
+  }
+}
