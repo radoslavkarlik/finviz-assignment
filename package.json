@@ -5,7 +5,7 @@
   "author": "Radoslav Karlik",
   "type": "module",
   "scripts": {
-    "start": "docker compose up"
+    "start": "docker compose watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -20,6 +20,8 @@
   },
   "packageManager": "pnpm@10.0.0",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

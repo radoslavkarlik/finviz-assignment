@@ -3,6 +3,10 @@ services:
     build: 
       context: .
       dockerfile: packages/frontend/Dockerfile
+    develop:
+      watch:
+        - path: ./packages/frontend/package.json
+          action: rebuild
     ports:
       - "5173:5173"
     volumes:

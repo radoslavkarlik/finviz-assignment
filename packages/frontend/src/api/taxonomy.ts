@@ -21,7 +21,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  TaxonomyItem
+  GetApiParams,
+  TaxonomyResponse
 } from './model';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
@@ -32,10 +33,10 @@ type AwaitedInput<T> = PromiseLike<T> | T;
 
 
 /**
- * @summary Get all taxonomy items
+ * @summary Get paginated taxonomy items
  */
 export type getApiResponse200 = {
-  data: TaxonomyItem[]
+  data: TaxonomyResponse
   status: 200
 }
 
@@ -46,17 +47,24 @@ export type getApiResponseSuccess = (getApiResponse200) & {
 
 export type getApiResponse = (getApiResponseSuccess)
 
-export const getGetApiUrl = () => {
+export const getGetApiUrl = (params?: GetApiParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `http://localhost:3000/api`
+  return stringifiedParams.length > 0 ? `http://localhost:3000/api?${stringifiedParams}` : `http://localhost:3000/api`
 }
 
-export const getApi = async ( options?: RequestInit): Promise<getApiResponse> => {
+export const getApi = async (params?: GetApiParams, options?: RequestInit): Promise<getApiResponse> => {
 
-  const res = await fetch(getGetApiUrl(),
+  const res = await fetch(getGetApiUrl(params),
   {
     ...options,
     method: 'GET'
@@ -75,23 +83,23 @@ export const getApi = async ( options?: RequestInit): Promise<getApiResponse> =>
 
 
 
-export const getGetApiQueryKey = () => {
+export const getGetApiQueryKey = (params?: GetApiParams,) => {
     return [
-    `http://localhost:3000/api`
+    `http://localhost:3000/api`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getGetApiQueryOptions = <TData = Awaited<ReturnType<typeof getApi>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>>, fetch?: RequestInit}
+export const getGetApiQueryOptions = <TData = Awaited<ReturnType<typeof getApi>>, TError = unknown>(params?: GetApiParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>>, fetch?: RequestInit}
 ) => {
 
 const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApi>>> = ({ signal }) => getApi({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApi>>> = ({ signal }) => getApi(params, { signal, ...fetchOptions });
 
 
 
@@ -105,7 +113,7 @@ export type GetApiQueryError = unknown
 
 
 export function useGetApi<TData = Awaited<ReturnType<typeof getApi>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>> & Pick<
+ params: undefined |  GetApiParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApi>>,
           TError,
@@ -115,7 +123,7 @@ export function useGetApi<TData = Awaited<ReturnType<typeof getApi>>, TError = u
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApi<TData = Awaited<ReturnType<typeof getApi>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>> & Pick<
+ params?: GetApiParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApi>>,
           TError,
@@ -125,19 +133,19 @@ export function useGetApi<TData = Awaited<ReturnType<typeof getApi>>, TError = u
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApi<TData = Awaited<ReturnType<typeof getApi>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>>, fetch?: RequestInit}
+ params?: GetApiParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get all taxonomy items
+ * @summary Get paginated taxonomy items
  */
 
 export function useGetApi<TData = Awaited<ReturnType<typeof getApi>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>>, fetch?: RequestInit}
+ params?: GetApiParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApi>>, TError, TData>>, fetch?: RequestInit}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiQueryOptions(options)
+  const queryOptions = getGetApiQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

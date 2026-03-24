@@ -5,8 +5,9 @@
  * A local API documented via a static JSON file
  * OpenAPI spec version: 1.0.0
  */
+import type { TaxonomyItem } from './taxonomyItem';
 
-export interface TaxonomyItem {
-  name?: string;
-  size?: number;
+export interface TaxonomyResponse {
+  items?: TaxonomyItem[];
+  total?: number;
 }

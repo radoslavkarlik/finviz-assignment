@@ -6,4 +6,6 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './getApiParams';
 export * from './taxonomyItem';
+export * from './taxonomyResponse';

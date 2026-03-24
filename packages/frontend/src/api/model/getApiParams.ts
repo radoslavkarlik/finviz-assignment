@@ -6,7 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface TaxonomyItem {
-  name?: string;
-  size?: number;
-}
+export type GetApiParams = {
+/**
+ * Page number (1-based)
+ */
+page?: number;
+/**
+ * Number of items per page
+ */
+offset?: number;
+};

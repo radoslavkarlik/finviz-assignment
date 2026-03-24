@@ -1,9 +1,11 @@
+import cors from "cors";
 import express from "express";
 import { readFileSync } from "fs";
 import { join } from "path";
 import swaggerUi from "swagger-ui-express";
 
 const app = express();
+app.use(cors({ origin: "http://localhost:5173" }));
 const port = process.env.PORT ?? 3000;
 
 const __dirname = import.meta.dirname;
@@ -21,7 +23,7 @@ app.get("/api", (req, res) => {
   const start = (page - 1) * offset;
   const items = data.slice(start, start + offset);
 
-  res.json(items);
+  res.json({ items, total: data.length });
 });
 
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swagger));

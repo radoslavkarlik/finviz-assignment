@@ -11,6 +11,8 @@
     "fmt:check": "oxfmt --check"
   },
   "dependencies": {
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.6",
     "express": "^5.1.0",
     "fast-xml-parser": "^5.5.9",
     "swagger-ui-express": "^5.0.1"
