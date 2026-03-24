@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 const app = express();
 const port = process.env.PORT ?? 3000;
 
+const __dirname = import.meta.dirname;
 const data: Array<unknown> = JSON.parse(readFileSync(join(__dirname, "parsed.json"), "utf-8"));
 
 app.get("/api", (req, res) => {
