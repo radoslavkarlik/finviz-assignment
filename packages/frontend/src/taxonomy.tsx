@@ -10,8 +10,15 @@ const columnHelper = createColumnHelper<TaxonomyItem>();
 const PAGE_SIZE = 10;
 
 export function Taxonomy() {
+  const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const { data } = useGetApi({ page, offset: PAGE_SIZE });
+
+  const onSearch = (search: string) => {
+    setSearch(search);
+    setPage(1);
+  };
+
+  const { data } = useGetApi({ page, offset: PAGE_SIZE, search });
 
   const pageCount = data?.data.total ? Math.ceil(data.data.total / PAGE_SIZE) : 0;
 
@@ -30,8 +37,15 @@ export function Taxonomy() {
   });
 
   return (
-    <main className="border border-amber-200 bg-amber-400 p-4 text-center text-xs text-amber-700 flex flex-col gap-4">
+    <main className="border border-amber-200 bg-amber-400 p-4 items-center text-center text-xs text-amber-700 flex flex-col gap-4">
       <h1 className="uppercase text-xl">Taxonomy</h1>
+      <input
+        className="w-50 border border-amber-300 bg-amber-100 placeholder:text-amber-500"
+        name="search"
+        placeholder="Search taxonomy..."
+        value={search}
+        onChange={(e) => onSearch(e.currentTarget.value)}
+      />
       <div className="flex flex-col gap-2">
         {table.getRowModel().rows.map((row) => (
           <div key={row.id}>{row.getValue("name")}</div>

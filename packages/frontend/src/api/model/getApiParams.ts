@@ -15,4 +15,8 @@ page?: number;
  * Number of items per page
  */
 offset?: number;
+/**
+ * Filter items by name (case-insensitive substring match)
+ */
+search?: string;
 };

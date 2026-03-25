@@ -27,6 +27,12 @@
             "in": "query",
             "description": "Number of items per page",
             "schema": { "type": "integer", "default": 20 }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Filter items by name (case-insensitive substring match)",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
