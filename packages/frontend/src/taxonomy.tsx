@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { TaxonomyItem } from "./api/model";
 
 import { useGetApi } from "./api/taxonomy";
+import { DataTable } from "./components/data-table";
 
 const columnHelper = createColumnHelper<TaxonomyItem>();
 
@@ -20,12 +21,15 @@ export function Taxonomy() {
 
   const { data } = useGetApi({ page, offset: PAGE_SIZE, search });
 
-  const pageCount = data?.data.total ? Math.ceil(data.data.total / PAGE_SIZE) : 0;
-
   const table = useReactTable({
     data: useMemo(() => data?.data.items ?? [], [data]),
-    columns: useMemo(() => [columnHelper.accessor("name", { header: "Name" })], []),
-    pageCount,
+    getRowId: (row) => row.name ?? "",
+    columns: useMemo(
+      () => [
+        columnHelper.accessor("name", { header: "Name", cell: ({ row }) => row.original.name }),
+      ],
+      [],
+    ),
     state: {
       pagination: {
         pageIndex: page - 1,
@@ -33,6 +37,7 @@ export function Taxonomy() {
       },
     },
     manualPagination: true,
+    rowCount: data?.data.total ?? 0,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -46,43 +51,7 @@ export function Taxonomy() {
         value={search}
         onChange={(e) => onSearch(e.currentTarget.value)}
       />
-      <div className="flex flex-col gap-2">
-        {table.getRowModel().rows.map((row) => (
-          <div key={row.id}>{row.getValue("name")}</div>
-        ))}
-      </div>
-      {pageCount > 1 && (
-        <div className="flex justify-center gap-2">
-          {(() => {
-            const delta = 2;
-            const pages: (number | "...")[] = [];
-
-            for (let i = 1; i <= pageCount; i++) {
-              if (i === 1 || i === pageCount || (i >= page - delta && i <= page + delta)) {
-                pages.push(i);
-              } else if (pages[pages.length - 1] !== "...") {
-                pages.push("...");
-              }
-            }
-
-            return pages.map((p, i) =>
-              p === "..." ? (
-                <span key={`ellipsis-${i}`} className="px-2 py-1 text-amber-700">
-                  …
-                </span>
-              ) : (
-                <button
-                  key={p}
-                  className={`px-3 py-1 border rounded ${page === p ? "bg-amber-600 text-amber-100" : "bg-amber-200 text-amber-700"}`}
-                  onClick={() => setPage(p)}
-                >
-                  {p}
-                </button>
-              ),
-            );
-          })()}
-        </div>
-      )}
+      <DataTable table={table} page={page} onPageChange={setPage} />
     </main>
   );
 }
