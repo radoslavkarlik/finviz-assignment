@@ -8,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "#components/ui/table";
+import { cn } from "#lib/utils";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
 
 type Props<TData> = {
@@ -20,7 +21,7 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
   const pageCount = table.getPageCount();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -46,7 +47,10 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
         </TableBody>
       </Table>
       {pageCount > 1 && onPageChange && page !== undefined && (
-        <div className="flex justify-center gap-2">
+        <nav
+          aria-label="Pagination"
+          className="flex items-center justify-center gap-1 border-t border-border px-4 py-3"
+        >
           {(() => {
             const delta = 2;
             const pages: (number | "...")[] = [];
@@ -61,13 +65,23 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
 
             return pages.map((p, i) =>
               p === "..." ? (
-                <span key={`ellipsis-${i}`} className="px-2 py-1 text-amber-700">
+                <span
+                  key={`ellipsis-${i}`}
+                  className="px-2 text-sm text-muted-foreground select-none"
+                >
                   …
                 </span>
               ) : (
                 <button
                   key={p}
-                  className={`px-3 py-1 border rounded ${page === p ? "bg-amber-600 text-amber-100" : "bg-amber-200 text-amber-700"}`}
+                  aria-label={`Page ${p}`}
+                  aria-current={page === p ? "page" : undefined}
+                  className={cn(
+                    "min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+                    page === p
+                      ? "bg-primary text-primary-foreground"
+                      : "text-foreground hover:bg-muted hover:text-foreground",
+                  )}
                   onClick={() => onPageChange(p)}
                 >
                   {p}
@@ -75,7 +89,7 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
               ),
             );
           })()}
-        </div>
+        </nav>
       )}
     </div>
   );
