@@ -1,10 +1,9 @@
+import type { TaxonomyItem } from "#api/model/taxonomyItem";
+
+import { useGetApi } from "#api/taxonomy";
+import { DataTable } from "#components/data-table";
 import { createColumnHelper, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
-
-import type { TaxonomyItem } from "./api/model";
-
-import { useGetApi } from "./api/taxonomy";
-import { DataTable } from "./components/data-table";
 
 const columnHelper = createColumnHelper<TaxonomyItem>();
 

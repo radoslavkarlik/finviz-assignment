@@ -1,9 +1,17 @@
 "use no memo";
 
-import { flexRender, type Table } from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "#components/ui/table";
+import { flexRender, type Table as TableType } from "@tanstack/react-table";
 
 type Props<TData> = {
-  readonly table: Table<TData>;
+  readonly table: TableType<TData>;
   readonly page?: number;
   readonly onPageChange?: (page: number) => void;
 };
@@ -13,28 +21,30 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
 
   return (
     <div className="flex flex-col gap-2">
-      <table>
-        <thead>
+      <Table>
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <th key={header.id} colSpan={header.colSpan}>
+                <TableHead key={header.id} colSpan={header.colSpan}>
                   {flexRender(header.column.columnDef.header, header.getContext())}
-                </th>
+                </TableHead>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </thead>
-        <tbody>
+        </TableHeader>
+        <TableBody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id}>
+            <TableRow key={row.id}>
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       {pageCount > 1 && onPageChange && page !== undefined && (
         <div className="flex justify-center gap-2">
           {(() => {
