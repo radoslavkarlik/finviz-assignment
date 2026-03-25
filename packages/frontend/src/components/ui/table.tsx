@@ -1,4 +1,4 @@
-import { cn } from "#lib/utils";
+import { cn } from "#components/lib/utils";
 import * as React from "react";
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
@@ -83,4 +83,64 @@ function TableCaption({ className, ...props }: React.ComponentProps<"caption">) 
   );
 }
 
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption };
+function TablePagination({ className, ...props }: React.ComponentProps<"nav">) {
+  return (
+    <nav
+      aria-label="Pagination"
+      className={cn(
+        "flex items-center justify-center gap-1 border-t border-border px-4 py-3",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function TablePage({
+  isActive,
+  className,
+  ...props
+}: React.ComponentProps<"button"> & { readonly isActive: boolean }) {
+  return (
+    <button
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+        isActive
+          ? "bg-primary text-primary-foreground"
+          : "text-foreground hover:bg-muted hover:text-foreground",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function TablePageEllipsis({
+  className,
+  ...props
+}: Omit<React.ComponentProps<"span">, "children">) {
+  return (
+    <span
+      aria-hidden
+      className={cn("px-2 text-sm text-muted-foreground select-none", className)}
+      {...props}
+    >
+      …
+    </span>
+  );
+}
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+  TablePagination,
+  TablePage,
+  TablePageEllipsis,
+};

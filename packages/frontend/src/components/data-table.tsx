@@ -6,9 +6,11 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TablePage,
+  TablePageEllipsis,
+  TablePagination,
   TableRow,
 } from "#components/ui/table";
-import { cn } from "#lib/utils";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
 
 type Props<TData> = {
@@ -21,7 +23,7 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
   const pageCount = table.getPageCount();
 
   return (
-    <div className="flex flex-col">
+    <div className="rounded-lg border border-border bg-background shadow-sm">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -47,10 +49,7 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
         </TableBody>
       </Table>
       {pageCount > 1 && onPageChange && page !== undefined && (
-        <nav
-          aria-label="Pagination"
-          className="flex items-center justify-center gap-1 border-t border-border px-4 py-3"
-        >
+        <TablePagination>
           {(() => {
             const delta = 2;
             const pages: (number | "...")[] = [];
@@ -65,31 +64,21 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
 
             return pages.map((p, i) =>
               p === "..." ? (
-                <span
-                  key={`ellipsis-${i}`}
-                  className="px-2 text-sm text-muted-foreground select-none"
-                >
-                  …
-                </span>
+                <TablePageEllipsis key={`ellipsis-${i}`} />
               ) : (
-                <button
+                <TablePage
                   key={p}
                   aria-label={`Page ${p}`}
                   aria-current={page === p ? "page" : undefined}
-                  className={cn(
-                    "min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
-                    page === p
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground hover:bg-muted hover:text-foreground",
-                  )}
+                  isActive={page === p}
                   onClick={() => onPageChange(p)}
                 >
                   {p}
-                </button>
+                </TablePage>
               ),
             );
           })()}
-        </nav>
+        </TablePagination>
       )}
     </div>
   );
