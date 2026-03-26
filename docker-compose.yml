@@ -7,6 +7,8 @@ services:
       watch:
         - path: ./packages/frontend/package.json
           action: rebuild
+        - path: ./pnpm-lock.yaml
+          action: rebuild
     ports:
       - "5173:5173"
     volumes:

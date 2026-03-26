@@ -5,7 +5,7 @@
   "author": "Radoslav Karlik",
   "type": "module",
   "scripts": {
-    "start": "docker compose watch"
+    "start": "docker compose up --build --watch"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
