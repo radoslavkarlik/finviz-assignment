@@ -88,7 +88,7 @@ function TablePagination({ className, ...props }: React.ComponentProps<"nav">) {
     <nav
       aria-label="Pagination"
       className={cn(
-        "flex items-center justify-center gap-1 border-t border-border px-4 py-3",
+        "flex flex-wrap items-center justify-center gap-1 border-t border-border px-4 py-3",
         className,
       )}
       {...props}

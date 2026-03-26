@@ -32,14 +32,14 @@ export function Taxonomy() {
 
   return (
     <main className="min-h-screen bg-muted/30">
-      <section className="max-w-4xl mx-auto px-6 py-12">
+      <section className="max-w-4xl mx-auto px-4 py-8 sm:px-6 sm:py-12">
         <header className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">Taxonomy</h1>
           <p className="mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
         </header>
-        <search className="flex items-center justify-between gap-4 mb-4">
+        <search className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
           <Input
-            className="h-9 w-64 bg-background"
+            className="h-9 w-full sm:w-64 bg-background"
             name="search"
             placeholder="Search..."
             value={searchInput}
