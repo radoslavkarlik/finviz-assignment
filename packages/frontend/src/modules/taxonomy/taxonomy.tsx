@@ -1,38 +1,22 @@
 import { useGetApi } from "#api/taxonomy";
-import { DataTable } from "#components/data-table";
 import { Input } from "#components/ui/input";
-import { useTaxonomyColumns } from "#taxonomy-columns";
-import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
+import { TAXONOMY_PAGE_SIZE, TaxonomyTable } from "#modules/taxonomy/taxonomy-table";
 import { useMemo, useState } from "react";
-
-const PAGE_SIZE = 10;
+import { useDebouncedCallback } from "use-debounce";
 
 export function Taxonomy() {
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
-  const onSearch = (value: string) => {
+  const onSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
     setPage(1);
-  };
+  }, 300);
 
-  const { data } = useGetApi({ page, offset: PAGE_SIZE, search });
+  const { data } = useGetApi({ page, offset: TAXONOMY_PAGE_SIZE, search });
+  const items = useMemo(() => data?.data.items ?? [], [data]);
   const total = data?.data.total ?? 0;
-
-  const table = useReactTable({
-    data: useMemo(() => data?.data.items ?? [], [data]),
-    getRowId: (row) => row.name ?? "",
-    columns: useTaxonomyColumns(),
-    state: {
-      pagination: {
-        pageIndex: page - 1,
-        pageSize: PAGE_SIZE,
-      },
-    },
-    manualPagination: true,
-    rowCount: total,
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   return (
     <main className="min-h-screen bg-muted/30">
@@ -46,8 +30,13 @@ export function Taxonomy() {
             className="h-9 w-64 bg-background"
             name="search"
             placeholder="Search..."
-            value={search}
-            onChange={(e) => onSearch(e.currentTarget.value)}
+            value={searchInput}
+            onChange={(e) => {
+              const newQuery = e.currentTarget.value;
+
+              setSearchInput(newQuery);
+              onSearch(newQuery);
+            }}
           />
           {total > 0 && (
             <p className="text-sm text-muted-foreground whitespace-nowrap">
@@ -55,7 +44,7 @@ export function Taxonomy() {
             </p>
           )}
         </search>
-        <DataTable table={table} page={page} onPageChange={setPage} />
+        <TaxonomyTable page={page} data={items} total={total} onPageChange={setPage} />
       </section>
     </main>
   );
