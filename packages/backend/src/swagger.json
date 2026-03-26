@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "My TypeScript API",
+    "title": "Taxonomy API",
     "version": "1.0.0",
-    "description": "A local API documented via a static JSON file"
+    "description": "API for browsing and searching taxonomy items"
   },
   "servers": [
     {
@@ -33,6 +33,12 @@
             "in": "query",
             "description": "Filter items by name (case-insensitive substring match)",
             "schema": { "type": "string" }
+          },
+          {
+            "name": "delay",
+            "in": "query",
+            "description": "Artificial delay in milliseconds before responding",
+            "schema": { "type": "integer", "default": 0 }
           }
         ],
         "responses": {

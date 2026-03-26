@@ -1,5 +1,6 @@
 "use no memo";
 
+import { Skeleton } from "#components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -16,11 +17,21 @@ import { flexRender, type Table as TableType } from "@tanstack/react-table";
 type Props<TData> = {
   readonly table: TableType<TData>;
   readonly page?: number;
+  readonly pageCount?: number;
+  readonly isLoading?: boolean;
+  readonly skeletonRows?: number;
   readonly onPageChange?: (page: number) => void;
 };
 
-export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
-  const pageCount = table.getPageCount();
+export function DataTable<TData>({
+  table,
+  page,
+  pageCount: providedPageCount,
+  isLoading,
+  skeletonRows = 10,
+  onPageChange,
+}: Props<TData>) {
+  const pageCount = providedPageCount ?? table.getPageCount();
 
   return (
     <div className="rounded-lg border border-border bg-background shadow-sm">
@@ -37,15 +48,25 @@ export function DataTable<TData>({ table, page, onPageChange }: Props<TData>) {
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
+          {isLoading
+            ? Array.from({ length: skeletonRows }).map((_, i) => (
+                <TableRow key={i}>
+                  {table.getAllColumns().map((col) => (
+                    <TableCell key={col.id}>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            : table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
         </TableBody>
       </Table>
       {pageCount > 1 && onPageChange && page !== undefined && (

@@ -1,8 +1,13 @@
 import { useGetApi } from "#api/taxonomy";
+import { DataTable } from "#components/data-table";
 import { Input } from "#components/ui/input";
-import { TAXONOMY_PAGE_SIZE, TaxonomyTable } from "#modules/taxonomy/taxonomy-table";
+import { Skeleton } from "#components/ui/skeleton";
+import { TAXONOMY_PAGE_SIZE, useTaxonomyTable } from "#modules/taxonomy/use-taxonomy-table";
 import { useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+
+// just for demonstration purposes, to simulate a slow API response
+const RESPONSE_DELAY = import.meta.env.DEV ? 500 : 0;
 
 export function Taxonomy() {
   const [searchInput, setSearchInput] = useState("");
@@ -14,9 +19,16 @@ export function Taxonomy() {
     setPage(1);
   }, 300);
 
-  const { data } = useGetApi({ page, offset: TAXONOMY_PAGE_SIZE, search });
+  const { data, isLoading } = useGetApi({
+    page,
+    offset: TAXONOMY_PAGE_SIZE,
+    search,
+    delay: RESPONSE_DELAY,
+  });
+
   const items = useMemo(() => data?.data.items ?? [], [data]);
   const total = data?.data.total ?? 0;
+  const table = useTaxonomyTable(items, page, total);
 
   return (
     <main className="min-h-screen bg-muted/30">
@@ -43,8 +55,16 @@ export function Taxonomy() {
               {total.toLocaleString()} item{total !== 1 ? "s" : ""}
             </p>
           )}
+          {isLoading && <Skeleton className="h-4 w-36" />}
         </search>
-        <TaxonomyTable page={page} data={items} total={total} onPageChange={setPage} />
+        <DataTable
+          table={table}
+          page={page}
+          pageCount={Math.ceil(total / TAXONOMY_PAGE_SIZE)}
+          isLoading={isLoading}
+          skeletonRows={TAXONOMY_PAGE_SIZE}
+          onPageChange={setPage}
+        />
       </section>
     </main>
   );
