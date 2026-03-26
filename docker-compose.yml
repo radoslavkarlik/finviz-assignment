@@ -19,6 +19,12 @@ services:
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
+    develop:
+      watch:
+        - path: ./packages/frontend/package.json
+          action: rebuild
+        - path: ./pnpm-lock.yaml
+          action: rebuild
     ports:
       - "3000:3000"
     volumes:

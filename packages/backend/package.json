@@ -2,9 +2,10 @@
   "name": "@finviz-assignment/backend",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "author": "Radoslav Karlik",
   "scripts": {
-    "start": "nodemon --exec node src/index.ts",
+    "start": "tsx watch src/index.ts",
     "lint": "eslint .",
     "ts": "tsc -b --noEmit",
     "fmt": "oxfmt",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
-    "@types/swagger-ui-express": "^4.1.8"
+    "@types/swagger-ui-express": "^4.1.8",
+    "tsx": "^4.21.0"
   }
 }
