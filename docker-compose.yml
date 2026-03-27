@@ -21,7 +21,9 @@ services:
       dockerfile: packages/backend/Dockerfile
     develop:
       watch:
-        - path: ./packages/frontend/package.json
+        - path: ./packages/backend/package.json
+          action: rebuild
+        - path: ./packages/backend/src/swaggger.json
           action: rebuild
         - path: ./pnpm-lock.yaml
           action: rebuild

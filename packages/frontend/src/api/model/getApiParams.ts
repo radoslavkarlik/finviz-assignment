@@ -24,6 +24,10 @@ search?: string;
  */
 delay?: number;
 /**
+ * Whether to include subfolders in the response
+ */
+subfolders?: boolean;
+/**
  * Filter items to those whose name starts with this prefix
  */
 parent?: string;

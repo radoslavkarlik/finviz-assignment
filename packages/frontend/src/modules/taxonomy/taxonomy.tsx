@@ -1,6 +1,8 @@
 import { useGetApi } from "#api/taxonomy";
 import { DataTable } from "#components/data-table";
+import { Checkbox } from "#components/ui/checkbox";
 import { Input } from "#components/ui/input";
+import { Label } from "#components/ui/label";
 import { Skeleton } from "#components/ui/skeleton";
 import { TaxonomyBreadcrumbs } from "#modules/taxonomy/taxonomy-breadcrumbs";
 import { TAXONOMY_PAGE_SIZE, useTaxonomyTable } from "#modules/taxonomy/use-taxonomy-table";
@@ -13,6 +15,7 @@ const RESPONSE_DELAY = import.meta.env.DEV ? 500 : 0;
 export function Taxonomy() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [subfolders, setSubfolders] = useState(false);
   const [page, setPage] = useState(1);
 
   const [currentLevel, setCurrentLevel] = useState("");
@@ -26,13 +29,14 @@ export function Taxonomy() {
     page,
     offset: TAXONOMY_PAGE_SIZE,
     search,
+    ...(search && { subfolders }),
     delay: RESPONSE_DELAY,
     ...(currentLevel && { parent: currentLevel }),
   });
 
   const items = useMemo(() => data?.data.items ?? [], [data]);
   const total = data?.data.total ?? 0;
-  const table = useTaxonomyTable(items, page, total);
+  const table = useTaxonomyTable(items, page, total, !!search && subfolders, currentLevel);
 
   const path = currentLevel ? currentLevel.split(" > ") : [data?.data.name ?? ""];
 
@@ -57,25 +61,36 @@ export function Taxonomy() {
           <h1 className="text-2xl font-semibold tracking-tight">Taxonomy</h1>
           <p className="mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
         </header>
-        <search className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
-          <Input
-            className="h-9 w-full sm:w-64 bg-background"
-            name="search"
-            placeholder="Search..."
-            value={searchInput}
-            onChange={(e) => {
-              const newQuery = e.currentTarget.value;
+        <search className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
+          <div className="flex flex-col gap-2">
+            <Input
+              className="h-9 w-full sm:w-72 bg-background"
+              name="search"
+              placeholder="Search..."
+              value={searchInput}
+              onChange={(e) => {
+                const newQuery = e.currentTarget.value;
 
-              setSearchInput(newQuery);
-              onSearch(newQuery);
-            }}
-          />
-          {total > 0 && (
-            <p className="text-sm text-muted-foreground whitespace-nowrap">
-              {total.toLocaleString()} item{total !== 1 ? "s" : ""}
-            </p>
-          )}
-          {isLoading && <Skeleton className="h-4 w-36" />}
+                setSearchInput(newQuery);
+                onSearch(newQuery);
+              }}
+            />
+            <Label className="cursor-pointer text-muted-foreground font-normal">
+              <Checkbox
+                checked={subfolders}
+                onCheckedChange={(subfolders: boolean) => setSubfolders(subfolders)}
+              />
+              Search subitems
+            </Label>
+          </div>
+          <div className="flex items-center h-9">
+            {total > 0 && (
+              <p className="text-sm text-muted-foreground whitespace-nowrap">
+                {total.toLocaleString()} item{total !== 1 ? "s" : ""}
+              </p>
+            )}
+            {isLoading && <Skeleton className="h-4 w-36" />}
+          </div>
         </search>
         <DataTable
           table={table}

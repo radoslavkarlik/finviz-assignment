@@ -9,11 +9,13 @@ export function useTaxonomyTable(
   data: Array<TaxonomyTreeItemResponse>,
   page: number,
   total: number,
+  subfolders: boolean,
+  currentLevel: string,
 ) {
   return useReactTable({
     data,
     getRowId: (row) => row.fullName ?? "",
-    columns: useTaxonomyColumns(),
+    columns: useTaxonomyColumns(subfolders, currentLevel),
     state: {
       pagination: {
         pageIndex: page - 1,

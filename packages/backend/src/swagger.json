@@ -41,6 +41,12 @@
             "schema": { "type": "integer", "default": 0 }
           },
           {
+            "name": "subfolders",
+            "in": "query",
+            "description": "Whether to include subfolders in the response",
+            "schema": { "type": "boolean", "default": false }
+          },
+          {
             "name": "parent",
             "in": "query",
             "description": "Filter items to those whose name starts with this prefix",

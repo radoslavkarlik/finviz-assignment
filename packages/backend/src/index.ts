@@ -26,26 +26,51 @@ app.get("/api", async (req, res) => {
   const page = parseInt((req.query.page as string) ?? "1", 10);
   const offset = parseInt((req.query.offset as string) ?? "20", 10);
   const search = (req.query.search as string)?.trim() ?? "";
+  const subfolders = req.query.subfolders === "true";
   const delay = parseInt((req.query.delay as string) ?? "0", 10);
   const parent = req.query.parent as string | undefined;
 
   const start = (page - 1) * offset;
   const subItems = parent ? data.filter((item) => item.name.startsWith(parent)) : data;
-  const itemTree = constructTree(subItems);
 
   if (delay > 0) {
     await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
-  if (!itemTree) {
-    res.json(null);
-    return;
+  const searchTrimmed = search.trim().toLowerCase();
+
+  if (subfolders && searchTrimmed) {
+    const matchedItems = subItems.filter((item) => {
+      if (item.name === parent) {
+        return false;
+      }
+
+      const leafName = item.name.split(" > ").at(-1) ?? item.name;
+
+      return leafName.toLowerCase().includes(searchTrimmed);
+    });
+
+    const paginatedItems = matchedItems
+      .slice(start, start + offset)
+      .map<TaxonomyTreeItemResponse>((item) => ({
+        name: item.name.split(" > ").at(-1) ?? item.name,
+        fullName: item.name,
+        size: item.size,
+      }));
+
+    const rootName = constructTree(subItems)?.name ?? "";
+
+    return res.json({ name: rootName, items: paginatedItems, total: matchedItems.length });
   }
 
-  const searchedItems = search.trim()
-    ? itemTree.children.filter((item) =>
-        item.name.toLowerCase().includes(search.trim().toLowerCase()),
-      )
+  const itemTree = constructTree(subItems);
+
+  if (!itemTree) {
+    return res.json(null);
+  }
+
+  const searchedItems = searchTrimmed
+    ? itemTree.children.filter((item) => item.name.toLowerCase().includes(searchTrimmed))
     : itemTree.children;
 
   const paginatedItems =
