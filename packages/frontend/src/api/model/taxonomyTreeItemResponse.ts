@@ -6,6 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export * from './getApiParams';
-export * from './taxonomyResponse';
-export * from './taxonomyTreeItemResponse';
+export interface TaxonomyTreeItemResponse {
+  name?: string;
+  size?: number;
+  /** Full taxonomy path joined by ' > ' */
+  fullName?: string;
+}

@@ -23,4 +23,8 @@ search?: string;
  * Artificial delay in milliseconds before responding
  */
 delay?: number;
+/**
+ * Filter items to those whose name starts with this prefix
+ */
+parent?: string;
 };

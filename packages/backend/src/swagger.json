@@ -39,6 +39,12 @@
             "in": "query",
             "description": "Artificial delay in milliseconds before responding",
             "schema": { "type": "integer", "default": 0 }
+          },
+          {
+            "name": "parent",
+            "in": "query",
+            "description": "Filter items to those whose name starts with this prefix",
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -58,21 +64,32 @@
   },
   "components": {
     "schemas": {
-      "TaxonomyItem": {
+      "TaxonomyTreeItemResponse": {
         "type": "object",
         "properties": {
           "name": { "type": "string" },
-          "size": { "type": "integer" }
+          "size": { "type": "integer" },
+          "fullName": {
+            "type": "string",
+            "description": "Full taxonomy path joined by ' > '"
+          }
         }
       },
       "TaxonomyResponse": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the root/parent node"
+          },
           "items": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/TaxonomyItem" }
+            "items": { "$ref": "#/components/schemas/TaxonomyTreeItemResponse" }
           },
-          "total": { "type": "integer" }
+          "total": {
+            "type": "integer",
+            "description": "Total number of children under the root/parent node"
+          }
         }
       }
     }

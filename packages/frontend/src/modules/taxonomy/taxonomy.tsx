@@ -2,6 +2,7 @@ import { useGetApi } from "#api/taxonomy";
 import { DataTable } from "#components/data-table";
 import { Input } from "#components/ui/input";
 import { Skeleton } from "#components/ui/skeleton";
+import { TaxonomyBreadcrumbs } from "#modules/taxonomy/taxonomy-breadcrumbs";
 import { TAXONOMY_PAGE_SIZE, useTaxonomyTable } from "#modules/taxonomy/use-taxonomy-table";
 import { useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -14,6 +15,8 @@ export function Taxonomy() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  const [currentLevel, setCurrentLevel] = useState("");
+
   const onSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
     setPage(1);
@@ -24,16 +27,33 @@ export function Taxonomy() {
     offset: TAXONOMY_PAGE_SIZE,
     search,
     delay: RESPONSE_DELAY,
+    ...(currentLevel && { parent: currentLevel }),
   });
 
   const items = useMemo(() => data?.data.items ?? [], [data]);
   const total = data?.data.total ?? 0;
   const table = useTaxonomyTable(items, page, total);
 
+  const path = currentLevel ? currentLevel.split(" > ") : [data?.data.name ?? ""];
+
   return (
     <main className="min-h-screen bg-muted/30">
       <section className="max-w-4xl mx-auto px-4 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8">
+        <TaxonomyBreadcrumbs
+          breadcrumbs={path}
+          isLoading={isLoading}
+          onClick={(_, index) => {
+            if (index === 0) {
+              setCurrentLevel("");
+            } else {
+              const fullPath = path.slice(0, index + 1).join(" > ");
+              setCurrentLevel(fullPath);
+            }
+
+            setPage(1);
+          }}
+        />
+        <header className="mb-8 mt-6">
           <h1 className="text-2xl font-semibold tracking-tight">Taxonomy</h1>
           <p className="mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
         </header>
@@ -64,6 +84,11 @@ export function Taxonomy() {
           isLoading={isLoading}
           skeletonRows={TAXONOMY_PAGE_SIZE}
           onPageChange={setPage}
+          isDisabled={(row) => !row.size}
+          onRowClick={(row) => {
+            setCurrentLevel(row.fullName ?? "");
+            setPage(1);
+          }}
         />
       </section>
     </main>

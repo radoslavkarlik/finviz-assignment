@@ -19,6 +19,8 @@ type Props<TData> = {
   readonly isLoading?: boolean;
   readonly skeletonRows?: number;
   readonly onPageChange?: (page: number) => void;
+  readonly onRowClick?: (row: TData) => void;
+  readonly isDisabled?: (row: TData) => boolean;
 };
 
 export function DataTable<TData>({
@@ -28,6 +30,8 @@ export function DataTable<TData>({
   isLoading,
   skeletonRows = 10,
   onPageChange,
+  onRowClick,
+  isDisabled,
 }: Props<TData>) {
   const pageCount = providedPageCount ?? table.getPageCount();
 
@@ -57,7 +61,16 @@ export function DataTable<TData>({
                 </TableRow>
               ))
             : table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  onClick={
+                    onRowClick && !isLoading && (!isDisabled || !isDisabled(row.original))
+                      ? () => {
+                          onRowClick(row.original);
+                        }
+                      : undefined
+                  }
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

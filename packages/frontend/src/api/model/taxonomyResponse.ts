@@ -5,9 +5,12 @@
  * API for browsing and searching taxonomy items
  * OpenAPI spec version: 1.0.0
  */
-import type { TaxonomyItem } from './taxonomyItem';
+import type { TaxonomyTreeItemResponse } from './taxonomyTreeItemResponse';
 
 export interface TaxonomyResponse {
-  items?: TaxonomyItem[];
+  /** Name of the root/parent node */
+  name?: string;
+  items?: TaxonomyTreeItemResponse[];
+  /** Total number of children under the root/parent node */
   total?: number;
 }
