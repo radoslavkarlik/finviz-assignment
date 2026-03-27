@@ -1,5 +1,3 @@
-"use no memo";
-
 import { Skeleton } from "#components/ui/skeleton";
 import {
   Table,
