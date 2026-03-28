@@ -113,7 +113,10 @@ export function Taxonomy() {
             {isLoading ? (
               <Skeleton className="h-4 w-36" />
             ) : (
-              <p className="text-sm whitespace-nowrap text-muted-foreground">
+              <p
+                data-testid="item-count"
+                className="text-sm whitespace-nowrap text-muted-foreground"
+              >
                 {total.toLocaleString()} item{total !== 1 ? "s" : ""}
                 {performance && (
                   <span className="ml-2 text-xs">({Number(performance).toFixed(0)}ms)</span>

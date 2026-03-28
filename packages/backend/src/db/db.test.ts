@@ -194,7 +194,9 @@ describe("getItems", () => {
 
     it("special characters like '(' in search do not throw", async () => {
       // "(" is escaped so it is treated as a literal character, not an invalid regex
-      await expect(db.getItems(1, 10, "Animals", "name", "asc", "(oo", false)).resolves.toMatchObject({ total: 0 });
+      await expect(
+        db.getItems(1, 10, "Animals", "name", "asc", "(oo", false),
+      ).resolves.toMatchObject({ total: 0 });
     });
   });
 

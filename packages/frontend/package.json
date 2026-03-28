@@ -9,7 +9,8 @@
       "vite": "./src/*",
       "typescript": [
         "./src/*.tsx",
-        "./src/*.ts"
+        "./src/*.ts",
+        "./src/*.css"
       ]
     }
   },
@@ -23,7 +24,8 @@
     "fmt:check": "oxfmt --check",
     "codegen": "orval --config orval.config.ts",
     "preview": "vite preview",
-    "add:component": "pnpm dlx shadcn@canary add"
+    "add:component": "pnpm dlx shadcn@canary add",
+    "test:browser": "vitest --config=vitest.browser.config.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
@@ -47,8 +49,10 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/browser-playwright": "^4.1.2",
     "orval": "^8.6.2",
     "tailwindcss": "^4.2.2",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vitest-browser-react": "^2.1.0"
   }
 }
