@@ -1,6 +1,6 @@
 import type { TaxonomyDbItem, TaxonomyItemResponse } from "#type";
 
-import { getItems, initDb, seedDb } from "#db/db";
+import { Db } from "#db/db";
 import cors from "cors";
 import express from "express";
 import { readFileSync } from "fs";
@@ -22,14 +22,15 @@ const querySchema = z.object({
   sortDir: z.enum(["asc", "desc"]).default("asc"),
 });
 
-await initDb();
+const db = new Db();
+await db.init();
 
 const __dirname = import.meta.dirname;
 const data: Array<TaxonomyDbItem> = JSON.parse(
   readFileSync(join(__dirname, "parsed.json"), "utf-8"),
 );
 
-await seedDb(data);
+await db.seed(data);
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
@@ -56,7 +57,7 @@ app.get("/api", async (req, res) => {
     await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
-  const result = await getItems(page, offset, parent, sortBy, sortDir, search, subfolders);
+  const result = await db.getItems(page, offset, parent, sortBy, sortDir, search, subfolders);
 
   const end = performance.now();
 

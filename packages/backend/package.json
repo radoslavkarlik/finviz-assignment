@@ -13,7 +13,8 @@
     "lint:fix": "eslint . --fix",
     "ts": "tsc -b --noEmit",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "test": "vitest"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.4.2",
