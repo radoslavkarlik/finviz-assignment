@@ -26,7 +26,12 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
       data-slot="breadcrumb-item"
-      className={cn("inline-flex items-center gap-1", props.onClick && "cursor-pointer hover:text-foreground/70 hover:bg-accent rounded px-1.5 py-0.5 -mx-1.5 transition-colors", className)}
+      className={cn(
+        "inline-flex items-center gap-1",
+        props.onClick &&
+          "-mx-1.5 cursor-pointer rounded px-1.5 py-0.5 transition-colors hover:bg-accent hover:text-foreground/70",
+        className,
+      )}
       {...props}
     />
   );

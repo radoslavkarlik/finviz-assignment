@@ -32,7 +32,7 @@ function Input({
         <button
           type="button"
           onClick={handleClear}
-          className="absolute right-2 cursor-pointer text-white/40 hover:text-white/90 transition-colors"
+          className="absolute right-2 cursor-pointer text-white/40 transition-colors hover:text-white/90"
           tabIndex={-1}
         >
           <X size={14} />

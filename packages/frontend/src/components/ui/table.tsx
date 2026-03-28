@@ -1,9 +1,16 @@
 import { cn } from "#components/lib/utils";
 import * as React from "react";
 
-function Table({ className, containerClassName, ...props }: React.ComponentProps<"table"> & { readonly containerClassName?: string }) {
+function Table({
+  className,
+  containerClassName,
+  ...props
+}: React.ComponentProps<"table"> & { readonly containerClassName?: string }) {
   return (
-    <div data-slot="table-container" className={cn("relative w-full overflow-x-auto rounded-[inherit]", containerClassName)}>
+    <div
+      data-slot="table-container"
+      className={cn("relative w-full overflow-x-auto rounded-[inherit]", containerClassName)}
+    >
       <table
         data-slot="table"
         className={cn("w-full caption-bottom text-sm", className)}
@@ -14,7 +21,13 @@ function Table({ className, containerClassName, ...props }: React.ComponentProps
 }
 
 function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
-  return <thead data-slot="table-header" className={cn("sticky top-0 z-10 bg-background [&_tr]:border-b", className)} {...props} />;
+  return (
+    <thead
+      data-slot="table-header"
+      className={cn("sticky top-0 z-10 bg-background [&_tr]:border-b", className)}
+      {...props}
+    />
+  );
 }
 
 function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
@@ -106,7 +119,7 @@ function TablePage({
     <button
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        "min-w-8 h-8 px-2 rounded-md text-sm font-medium transition-colors cursor-pointer",
+        "h-8 min-w-8 cursor-pointer rounded-md px-2 text-sm font-medium transition-colors",
         isActive
           ? "bg-primary text-primary-foreground"
           : "text-foreground hover:bg-muted hover:text-foreground",

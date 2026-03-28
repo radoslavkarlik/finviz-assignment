@@ -18,10 +18,10 @@ export class ErrorBoundary extends Component<Props, State> {
     }
 
     return (
-      <main className="min-h-screen bg-muted/30 flex items-center justify-center p-6">
-        <div className="max-w-lg w-full bg-background border rounded-lg shadow-sm p-8">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10 text-destructive text-lg font-bold shrink-0">
+      <main className="flex min-h-screen items-center justify-center bg-muted/30 p-6">
+        <div className="w-full max-w-lg rounded-lg border bg-background p-8 shadow-sm">
+          <div className="mb-6 flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-lg font-bold text-destructive">
               !
             </div>
             <div>
@@ -34,10 +34,10 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-sm font-medium text-destructive">{error.message}</p>
             {errorInfo?.componentStack && (
               <details className="group">
-                <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground select-none">
+                <summary className="cursor-pointer text-xs text-muted-foreground select-none hover:text-foreground">
                   Stack trace
                 </summary>
-                <pre className="mt-2 max-h-48 overflow-auto rounded-md bg-muted px-4 py-3 text-xs text-muted-foreground whitespace-pre-wrap break-all">
+                <pre className="mt-2 max-h-48 overflow-auto rounded-md bg-muted px-4 py-3 text-xs break-all whitespace-pre-wrap text-muted-foreground">
                   {error.stack}
                   {errorInfo.componentStack}
                 </pre>
@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Reload page
           </button>

@@ -7,7 +7,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  globalIgnores(["dist", "packages/frontend/src/api"]),
+  globalIgnores(["dist", "packages/frontend/src/api", "swagger.json", "parsed.json"]),
   {
     files: ["**/*.{ts,tsx}"],
     plugins: { "@tanstack/query": pluginQuery },

@@ -38,7 +38,7 @@ export function DataTable<TData>({
   const pageCount = providedPageCount ?? table.getPageCount();
 
   return (
-    <div className="rounded-lg border border-border bg-background shadow-sm flex flex-col min-h-0">
+    <div className="flex min-h-0 flex-col rounded-lg border border-border bg-background shadow-sm">
       <Table containerClassName="overflow-y-auto flex-1 min-h-0">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -63,7 +63,8 @@ export function DataTable<TData>({
                         : undefined
                     }
                     className={cn(
-                      canSort && "cursor-pointer select-none hover:text-muted-foreground hover:brightness-150",
+                      canSort &&
+                        "cursor-pointer select-none hover:text-muted-foreground hover:brightness-150",
                       canSort && !sorted && "text-muted-foreground",
                       alignRight && "text-right",
                     )}

@@ -17,6 +17,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "ts": "tsc -b --noEmit",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
@@ -42,7 +43,6 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.2.2",
-    "@tanstack/eslint-plugin-query": "^5.95.2",
     "@tanstack/react-query-devtools": "^5.95.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

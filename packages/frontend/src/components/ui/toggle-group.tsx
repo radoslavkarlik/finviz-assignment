@@ -1,7 +1,5 @@
-"use client";
-
 import { cn } from "#components/lib/utils";
-import { toggleVariants } from "#components/ui/toggle";
+import { toggleVariants } from "#components/ui/toggle/toggle-variants";
 import { type VariantProps } from "class-variance-authority";
 import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
 import * as React from "react";

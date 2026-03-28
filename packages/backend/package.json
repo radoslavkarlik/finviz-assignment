@@ -2,11 +2,12 @@
   "name": "@finviz-assignment/backend",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "author": "Radoslav Karlik",
+  "type": "module",
   "scripts": {
     "start": "tsx watch src/index.ts",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "ts": "tsc -b --noEmit",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check"

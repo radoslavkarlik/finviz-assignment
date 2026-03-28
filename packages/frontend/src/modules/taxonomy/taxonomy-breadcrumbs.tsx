@@ -15,7 +15,7 @@ type Props = {
 
 export function TaxonomyBreadcrumbs({ breadcrumbs, isLoading, onClick }: Props) {
   if (isLoading) {
-    return <Skeleton className="w-72 h-4" />;
+    return <Skeleton className="h-4 w-72" />;
   }
 
   return (

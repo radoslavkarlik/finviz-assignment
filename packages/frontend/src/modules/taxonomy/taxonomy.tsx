@@ -65,8 +65,8 @@ export function Taxonomy() {
   const path = currentLevel ? currentLevel.split(" > ") : [data?.data.name ?? ""];
 
   return (
-    <main className="h-screen overflow-hidden flex flex-col bg-muted/30">
-      <section className="flex flex-col flex-1 min-h-0 max-w-4xl w-full mx-auto px-4 py-8 sm:px-6 sm:py-12">
+    <main className="flex h-screen flex-col overflow-hidden bg-muted/30">
+      <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col px-4 py-8 sm:px-6 sm:py-12">
         <TaxonomyBreadcrumbs
           breadcrumbs={path}
           isLoading={isLoading}
@@ -81,17 +81,17 @@ export function Taxonomy() {
             setPage(1);
           }}
         />
-        <header className="mb-8 mt-6 flex flex-wrap items-start justify-between gap-4">
+        <header className="mt-6 mb-8 flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Taxonomy</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
+            <p className=" mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
           </div>
           <AppTheme />
         </header>
-        <search className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
+        <search className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex flex-col gap-2">
             <Input
-              className="h-9 w-full sm:w-72 bg-background"
+              className="h-9 w-full bg-background sm:w-72"
               name="search"
               placeholder="Search..."
               value={searchInput}
@@ -100,7 +100,7 @@ export function Taxonomy() {
                 onSearch(newQuery);
               }}
             />
-            <Label className="cursor-pointer text-muted-foreground font-normal">
+            <Label className="cursor-pointer font-normal text-muted-foreground">
               <Checkbox
                 checked={subfolders}
                 onCheckedChange={(subfolders: boolean) => setSubfolders(subfolders)}
@@ -108,9 +108,9 @@ export function Taxonomy() {
               Search subitems
             </Label>
           </div>
-          <div className="flex items-center gap-3 h-9">
+          <div className="flex h-9 items-center gap-3">
             {total > 0 && (
-              <p className="text-sm text-muted-foreground whitespace-nowrap">
+              <p className="text-sm whitespace-nowrap text-muted-foreground">
                 {total.toLocaleString()} item{total !== 1 ? "s" : ""}
               </p>
             )}
@@ -121,7 +121,7 @@ export function Taxonomy() {
                 setPageSize(Number(e.target.value));
                 setPage(1);
               }}
-              className="h-9 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 cursor-pointer"
+              className="h-9 cursor-pointer rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             >
               {[3, 10, 25, 50, 100].map((size) => (
                 <option key={size} value={size}>
@@ -131,7 +131,7 @@ export function Taxonomy() {
             </select>
           </div>
         </search>
-        <div className="flex-1 min-h-0 flex flex-col">
+        <div className="flex min-h-0 flex-1 flex-col">
           <DataTable
             table={table}
             page={page}
