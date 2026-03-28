@@ -1,3 +1,4 @@
+import type { GetApiSortBy } from "#api/model/getApiSortBy";
 import type { TaxonomyTreeItemResponse } from "#api/model/taxonomyTreeItemResponse";
 
 import { formatTaxonomyBytes } from "#lib/format-taxonomy-size";
@@ -7,8 +8,8 @@ import { useMemo } from "react";
 export const TaxonomyColumnId = {
   Name: "name",
   Size: "size",
-  Subpath: "subpath",
-} as const;
+  Subpath: "subPath",
+} as const satisfies Record<string, GetApiSortBy>;
 
 const columnHelper = createColumnHelper<TaxonomyTreeItemResponse>();
 

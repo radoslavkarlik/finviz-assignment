@@ -12,5 +12,5 @@ export type GetApiSortBy = typeof GetApiSortBy[keyof typeof GetApiSortBy];
 export const GetApiSortBy = {
   name: 'name',
   size: 'size',
-  subpath: 'subpath',
+  subPath: 'subPath',
 } as const;

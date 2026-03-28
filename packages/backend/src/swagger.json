@@ -56,7 +56,7 @@
             "name": "sortBy",
             "in": "query",
             "description": "Property to sort by",
-            "schema": { "type": "string", "enum": ["name", "size", "subpath"], "default": "name" }
+            "schema": { "type": "string", "enum": ["name", "size", "subPath"], "default": "name" }
           },
           {
             "name": "sortDir",

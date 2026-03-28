@@ -14,7 +14,7 @@ import { useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 // just for demonstration purposes, to simulate a slow API response
-const RESPONSE_DELAY = import.meta.env.DEV ? 500 : 0;
+const RESPONSE_DELAY = import.meta.env.DEV ? 200 : 0;
 const TAXONOMY_PAGE_SIZE = 10;
 
 export function Taxonomy() {
@@ -38,7 +38,7 @@ export function Taxonomy() {
 
   const { data, isLoading } = useGetApi({
     ...(sortParams && {
-      sortBy: sortParams.id as "name" | "size" | "subpath",
+      sortBy: sortParams.id as "name" | "size" | "subPath",
       sortDir: sortParams.desc ? "desc" : "asc",
     }),
     page,

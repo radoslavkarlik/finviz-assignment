@@ -1,17 +1,12 @@
-export type TaxonomyFlatItem = {
+export type TaxonomyDbItem = {
   readonly name: string;
   readonly size: number;
 };
 
-export type TaxonomyTreeItem = {
-  readonly name: string;
-  readonly size: number;
-  readonly fullName: string;
-  readonly children: Array<TaxonomyTreeItem>;
+export type TaxonomyDbQueryItem = TaxonomyDbItem & {
+  readonly subPath?: string;
 };
 
-export type TaxonomyTreeItemResponse = {
-  readonly name: string;
-  readonly size: number;
+export type TaxonomyItemResponse = TaxonomyDbQueryItem & {
   readonly fullName: string;
 };

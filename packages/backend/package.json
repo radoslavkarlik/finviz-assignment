@@ -4,6 +4,9 @@
   "private": true,
   "author": "Radoslav Karlik",
   "type": "module",
+  "imports": {
+    "#*": "./src/*.ts"
+  },
   "scripts": {
     "start": "tsx watch src/index.ts",
     "lint": "eslint .",
@@ -13,6 +16,7 @@
     "fmt:check": "oxfmt --check"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.4.2",
     "@types/cors": "^2.8.19",
     "cors": "^2.8.6",
     "express": "^5.1.0",
