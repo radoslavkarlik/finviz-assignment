@@ -38,8 +38,8 @@ export function DataTable<TData>({
   const pageCount = providedPageCount ?? table.getPageCount();
 
   return (
-    <div className="rounded-lg border border-border bg-background shadow-sm">
-      <Table>
+    <div className="rounded-lg border border-border bg-background shadow-sm flex flex-col min-h-0">
+      <Table containerClassName="overflow-y-auto flex-1 min-h-0">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">

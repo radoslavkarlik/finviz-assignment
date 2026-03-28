@@ -131,7 +131,7 @@ export function Taxonomy() {
             </select>
           </div>
         </search>
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 min-h-0 flex flex-col">
           <DataTable
             table={table}
             page={page}
