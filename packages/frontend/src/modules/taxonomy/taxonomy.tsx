@@ -64,8 +64,8 @@ export function Taxonomy() {
   const path = currentLevel ? currentLevel.split(" > ") : [data?.data.name ?? ""];
 
   return (
-    <main className="min-h-screen bg-muted/30">
-      <section className="max-w-4xl mx-auto px-4 py-8 sm:px-6 sm:py-12">
+    <main className="h-screen overflow-hidden flex flex-col bg-muted/30">
+      <section className="flex flex-col flex-1 min-h-0 max-w-4xl w-full mx-auto px-4 py-8 sm:px-6 sm:py-12">
         <TaxonomyBreadcrumbs
           breadcrumbs={path}
           isLoading={isLoading}
@@ -127,19 +127,21 @@ export function Taxonomy() {
             </select>
           </div>
         </search>
-        <DataTable
-          table={table}
-          page={page}
-          pageCount={Math.ceil(total / pageSize)}
-          isLoading={isLoading}
-          skeletonRows={pageSize}
-          onPageChange={setPage}
-          isDisabled={(row) => !row.size}
-          onRowClick={(row) => {
-            setCurrentLevel(row.fullName ?? "");
-            setPage(1);
-          }}
-        />
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <DataTable
+            table={table}
+            page={page}
+            pageCount={Math.ceil(total / pageSize)}
+            isLoading={isLoading}
+            skeletonRows={pageSize}
+            onPageChange={setPage}
+            isDisabled={(row) => !row.size}
+            onRowClick={(row) => {
+              setCurrentLevel(row.fullName ?? "");
+              setPage(1);
+            }}
+          />
+        </div>
       </section>
     </main>
   );
