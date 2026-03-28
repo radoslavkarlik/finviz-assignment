@@ -42,7 +42,7 @@ export function DataTable<TData>({
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => {
                 const canSort = header.column.getCanSort();
                 const sorted = header.column.getIsSorted();
@@ -63,7 +63,7 @@ export function DataTable<TData>({
                         : undefined
                     }
                     className={cn(
-                      canSort && "cursor-pointer select-none",
+                      canSort && "cursor-pointer select-none hover:text-muted-foreground hover:brightness-150",
                       canSort && !sorted && "text-muted-foreground",
                       alignRight && "text-right",
                     )}
