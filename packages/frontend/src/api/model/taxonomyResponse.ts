@@ -13,4 +13,6 @@ export interface TaxonomyResponse {
   items?: TaxonomyTreeItemResponse[];
   /** Total number of children under the root/parent node */
   total?: number;
+  /** Query execution time in milliseconds */
+  performance?: string;
 }

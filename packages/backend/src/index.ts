@@ -50,6 +50,7 @@ app.get("/api", async (req, res) => {
 
   const { page, offset, search, subfolders, delay, parent, sortBy, sortDir } = parsed.data;
 
+  const start = performance.now();
 
   if (delay > 0) {
     await new Promise((resolve) => setTimeout(resolve, delay));
@@ -57,6 +58,7 @@ app.get("/api", async (req, res) => {
 
   const result = await getItems(page, offset, parent, sortBy, sortDir, search, subfolders);
 
+  const end = performance.now();
 
   return res.json({
     name: parent ? (result.items.at(0)?.name ?? "") : parent,
@@ -66,6 +68,7 @@ app.get("/api", async (req, res) => {
       size: item.size,
     })),
     total: result.total,
+    performance: (end - start).toString(),
   });
 });
 

@@ -107,6 +107,10 @@
           "total": {
             "type": "integer",
             "description": "Total number of children under the root/parent node"
+          },
+          "performance": {
+            "type": "string",
+            "description": "Query execution time in milliseconds"
           }
         }
       }

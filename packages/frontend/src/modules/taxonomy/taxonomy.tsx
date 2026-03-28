@@ -51,6 +51,7 @@ export function Taxonomy() {
 
   const items = useMemo(() => data?.data.items ?? [], [data]);
   const total = data?.data.total ?? 0;
+  const performance = data?.data.performance;
   const table = useTaxonomyTable(
     items,
     sorting,
@@ -112,6 +113,9 @@ export function Taxonomy() {
             {total > 0 && (
               <p className="text-sm whitespace-nowrap text-muted-foreground">
                 {total.toLocaleString()} item{total !== 1 ? "s" : ""}
+                {performance && (
+                  <span className="ml-2 text-xs">({Number(performance).toFixed(0)}ms)</span>
+                )}
               </p>
             )}
             {isLoading && <Skeleton className="h-4 w-36" />}
