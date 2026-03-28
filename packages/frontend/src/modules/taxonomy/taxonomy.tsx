@@ -88,9 +88,7 @@ export function Taxonomy() {
               name="search"
               placeholder="Search..."
               value={searchInput}
-              onChange={(e) => {
-                const newQuery = e.currentTarget.value;
-
+              onChange={(newQuery) => {
                 setSearchInput(newQuery);
                 onSearch(newQuery);
               }}
