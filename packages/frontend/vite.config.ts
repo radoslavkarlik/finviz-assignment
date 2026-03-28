@@ -8,6 +8,12 @@ export default defineConfig({
     host: true,
     port: 5173,
     cors: true,
+    proxy: {
+      "/api": {
+        target: "http://backend:3000",
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     conditions: ["vite"],

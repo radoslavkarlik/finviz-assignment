@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:24-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -14,4 +14,14 @@ COPY packages/frontend/ ./packages/frontend/
 
 WORKDIR /app/packages/frontend
 
+FROM base AS development
 CMD [ "pnpm", "dev", "--host"]
+
+FROM base AS builder
+RUN pnpm build
+
+FROM nginx:stable-alpine AS runner
+ENV NODE_ENV=production
+COPY --from=builder /app/packages/frontend/dist /usr/share/nginx/html
+COPY --from=builder /app/packages/frontend/nginx.conf /etc/nginx/conf.d/default.conf
+CMD sed -i "s/\${PORT}/${PORT:-80}/g" /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'

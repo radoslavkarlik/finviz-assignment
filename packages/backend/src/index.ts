@@ -3,9 +3,8 @@ import type { TaxonomyDbItem, TaxonomyItemResponse } from "#type";
 import { Db } from "#db/db";
 import cors from "cors";
 import express from "express";
-import { readFileSync } from "fs";
-import { join } from "path";
-import swaggerUi from "swagger-ui-express";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { z } from "zod";
 
 const querySchema = z.object({
@@ -22,59 +21,67 @@ const querySchema = z.object({
   sortDir: z.enum(["asc", "desc"]).default("asc"),
 });
 
-const db = new Db();
-await db.init();
+const port = Number(process.env.PORT) || 3000;
 
-const __dirname = import.meta.dirname;
-const data: Array<TaxonomyDbItem> = JSON.parse(
-  readFileSync(join(__dirname, "parsed.json"), "utf-8"),
-);
+async function run() {
+  const db = new Db();
 
-await db.seed(data);
+  await db.init();
 
-const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
-const port = process.env.PORT ?? 3000;
+  // 1. Read the file only when needed
+  const jsonPath = path.resolve(process.cwd(), "parsed.json");
+  const rawData = await readFile(jsonPath, "utf8");
+  const data = JSON.parse(rawData);
 
-const swagger = JSON.parse(readFileSync(join(__dirname, "swagger.json"), "utf-8"));
+  await db.seed(data as TaxonomyDbItem[]);
 
-app.get("/swagger.json", (_req, res) => {
-  res.json(swagger);
-});
-
-app.get("/api", async (req, res) => {
-  const parsed = querySchema.safeParse(req.query);
-
-  if (!parsed.success) {
-    return res.status(400).json({ error: parsed.error.issues });
+  const app = express();
+  if (process.env.NODE_ENV !== "production") {
+    app.use(cors({ origin: true }));
   }
 
-  const { page, offset, search, subfolders, delay, parent, sortBy, sortDir } = parsed.data;
-
-  const start = performance.now();
-
-  if (delay > 0) {
-    await new Promise((resolve) => setTimeout(resolve, delay));
-  }
-
-  const result = await db.getItems(page, offset, parent, sortBy, sortDir, search, subfolders);
-
-  const end = performance.now();
-
-  return res.json({
-    name: parent ? (result.items.at(0)?.name ?? "") : parent,
-    items: result.items.map<TaxonomyItemResponse>((item) => ({
-      name: item.name.split(" > ").at(-1) ?? "",
-      fullName: item.name,
-      size: item.size,
-    })),
-    total: result.total,
-    performance: (end - start).toString(),
+  app.get("/health", (_, res) => {
+    res.status(200).send("OK");
   });
-});
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swagger));
+  app.use("/api-docs", express.static(path.join(process.cwd(), "public/docs")));
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+  app.get("/api", async (req, res) => {
+    const parsed = querySchema.safeParse(req.query);
+
+    if (!parsed.success) {
+      return res.status(400).json({ error: parsed.error.issues });
+    }
+
+    const { page, offset, search, subfolders, delay, parent, sortBy, sortDir } = parsed.data;
+
+    const start = performance.now();
+
+    if (delay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+
+    const result = await db.getItems(page, offset, parent, sortBy, sortDir, search, subfolders);
+
+    const end = performance.now();
+
+    return res.json({
+      name: parent ? (result.items.at(0)?.name ?? "") : parent,
+      items: result.items.map<TaxonomyItemResponse>((item) => ({
+        name: item.name.split(" > ").at(-1) ?? "",
+        fullName: item.name,
+        size: item.size,
+      })),
+      total: result.total,
+      performance: (end - start).toString(),
+    });
+  });
+
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`Server running on port ${port}`);
+  });
+}
+
+run().catch((error) => {
+  console.error(error);
 });

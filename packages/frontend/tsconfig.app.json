@@ -26,6 +26,6 @@
 
     "customConditions": ["typescript"]
   },
-  "include": ["src"],
+  "include": ["src", "fetch-api.ts"],
   "exclude": ["src/api"]
 }

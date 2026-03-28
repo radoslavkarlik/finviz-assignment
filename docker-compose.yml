@@ -3,6 +3,7 @@ services:
     build: 
       context: .
       dockerfile: packages/frontend/Dockerfile
+      target: development
     develop:
       watch:
         - path: ./packages/frontend/package.json
@@ -19,11 +20,12 @@ services:
     build:
       context: .
       dockerfile: packages/backend/Dockerfile
+      target: development
     develop:
       watch:
         - path: ./packages/backend/package.json
           action: rebuild
-        - path: ./packages/backend/src/swaggger.json
+        - path: ./packages/backend/src/swagger.json
           action: rebuild
         - path: ./pnpm-lock.yaml
           action: rebuild
@@ -32,4 +34,5 @@ services:
     volumes:
       - ./packages/backend:/app/packages/backend
       - /app/packages/backend/node_modules
+      - /app/packages/backend/public/docs
       - /app/node_modules

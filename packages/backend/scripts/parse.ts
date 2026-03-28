@@ -45,5 +45,5 @@ const parsed = parser.parse(xml) as ImageNetXml;
 const root = parsed.ImageNetStructure.synset;
 const entries = flatten(root, "");
 
-writeFileSync(join(__dirname, "parsed.json"), JSON.stringify(entries, null, 2));
+writeFileSync(join(__dirname, "..", "parsed.json"), JSON.stringify(entries, null, 2));
 console.log(`Parsed ${entries.length} entries`);

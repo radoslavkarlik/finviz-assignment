@@ -59,7 +59,7 @@ export const getGetApiUrl = (params?: GetApiParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `http://localhost:3000/api?${stringifiedParams}` : `http://localhost:3000/api`
+  return stringifiedParams.length > 0 ? `/api?${stringifiedParams}` : `/api`
 }
 
 export const getApi = async (params?: GetApiParams, options?: RequestInit): Promise<getApiResponse> => {
@@ -85,7 +85,7 @@ export const getApi = async (params?: GetApiParams, options?: RequestInit): Prom
 
 export const getGetApiQueryKey = (params?: GetApiParams,) => {
     return [
-    `http://localhost:3000/api`, ...(params ? [params] : [])
+    `/api`, ...(params ? [params] : [])
     ] as const;
     }
 
