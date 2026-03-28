@@ -20,6 +20,7 @@ type Props<TData> = {
   readonly pageCount?: number;
   readonly isLoading?: boolean;
   readonly skeletonRows?: number;
+  readonly emptyText?: string;
   readonly onPageChange?: (page: number) => void;
   readonly onRowClick?: (row: TData) => void;
   readonly isDisabled?: (row: TData) => boolean;
@@ -31,11 +32,13 @@ export function DataTable<TData>({
   pageCount: providedPageCount,
   isLoading,
   skeletonRows = 10,
+  emptyText = "No results found.",
   onPageChange,
   onRowClick,
   isDisabled,
 }: Props<TData>) {
   const pageCount = providedPageCount ?? table.getPageCount();
+  const isEmpty = !isLoading && table.getRowModel().rows.length === 0;
 
   return (
     <div className="flex min-h-0 flex-col rounded-lg border border-border bg-background shadow-sm">
@@ -44,7 +47,7 @@ export function DataTable<TData>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => {
-                const canSort = header.column.getCanSort();
+                const canSort = header.column.getCanSort() && !isEmpty;
                 const sorted = header.column.getIsSorted();
 
                 const { meta } = header.column.columnDef;
@@ -105,24 +108,35 @@ export function DataTable<TData>({
                   ))}
                 </TableRow>
               ))
-            : table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  onClick={
-                    onRowClick && !isLoading && (!isDisabled || !isDisabled(row.original))
-                      ? () => {
-                          onRowClick(row.original);
-                        }
-                      : undefined
-                  }
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            : isEmpty
+              ? [
+                  <TableRow key="empty" className="hover:bg-transparent">
+                    <TableCell
+                      colSpan={table.getAllColumns().length}
+                      className="h-24 text-center text-muted-foreground"
+                    >
+                      {emptyText}
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                  </TableRow>,
+                ]
+              : table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    onClick={
+                      onRowClick && !isLoading && (!isDisabled || !isDisabled(row.original))
+                        ? () => {
+                            onRowClick(row.original);
+                          }
+                        : undefined
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
         </TableBody>
       </Table>
       {pageCount > 1 && onPageChange && page !== undefined && (

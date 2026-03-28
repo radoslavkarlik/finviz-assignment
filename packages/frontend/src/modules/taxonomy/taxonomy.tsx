@@ -110,7 +110,9 @@ export function Taxonomy() {
             </Label>
           </div>
           <div className="flex h-9 items-center gap-3">
-            {total > 0 && (
+            {isLoading ? (
+              <Skeleton className="h-4 w-36" />
+            ) : (
               <p className="text-sm whitespace-nowrap text-muted-foreground">
                 {total.toLocaleString()} item{total !== 1 ? "s" : ""}
                 {performance && (
@@ -118,7 +120,6 @@ export function Taxonomy() {
                 )}
               </p>
             )}
-            {isLoading && <Skeleton className="h-4 w-36" />}
             <select
               value={pageSize}
               onChange={(e) => {
@@ -144,6 +145,7 @@ export function Taxonomy() {
             skeletonRows={pageSize}
             onPageChange={setPage}
             isDisabled={(row) => !row.size}
+            emptyText="No taxonomy entries found."
             onRowClick={(row) => {
               setCurrentLevel(row.fullName ?? "");
               setPage(1);
