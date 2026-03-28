@@ -80,13 +80,16 @@ export class Db implements Disposable {
       return result.rows[0]?.name;
     })();
 
+    const escapedSearch = search.replace(/[$()*+.?[\\\]^{|}]/g, "\\$&");
+    const escapedParent = adjustedParent?.replace(/[%_\\]/g, "\\$&");
+
     const whereClause =
       // matches all items starting after a parent, e.g., `parent > ** > *`
-      `WHERE name LIKE $1 || ' > %'
-        ${/* matches all ending segments against a search string that presents, e.g., `* > query` */ ""} 
-        ${search ? `AND name ~ ('${search}' || '[^>]*$')` : ""}
-        ${/* if not search within subfolders it prevent matching further than direct descendats, e.g., `parent > *` but not `parent > * > *` `* > query` */ ""} 
-        ${subfolders ? "" : `AND name NOT LIKE $1 || ' > % > %'`}`;
+      `WHERE name LIKE $1 || ' > %' ESCAPE '\\'
+        ${/* matches ending segments against search; empty search becomes '[^>]*$' which matches everything */ ""}
+        AND name ~ ($2 || '[^>]*$')
+        ${/* if not search within subfolders it prevent matching further than direct descendats, e.g., `parent > *` but not `parent > * > *` `* > query` */ ""}
+        ${subfolders ? "" : `AND name NOT LIKE $1 || ' > % > %' ESCAPE '\\'`}`;
 
     const selectionClause = `
       SELECT name, size${subfolders ? subPathProp : ""} FROM taxonomy
@@ -97,13 +100,13 @@ export class Db implements Disposable {
         // derive temporary table to be allowed to search by the created prop
         `${subfolders ? `SELECT * FROM (${selectionClause}) AS derived_table` : selectionClause}
         ORDER BY ${sortMap[sortBy]} ${sortDir.toUpperCase()}
-        LIMIT $2 OFFSET $3`,
-        [adjustedParent, pageSize, offset],
+        LIMIT $3 OFFSET $4`,
+        [escapedParent, escapedSearch, pageSize, offset],
       ),
       this.#client.query<{ readonly count: string }>(
         `SELECT COUNT(*) AS count FROM taxonomy
            ${whereClause}`,
-        [adjustedParent],
+        [escapedParent, escapedSearch],
       ),
     ]);
 

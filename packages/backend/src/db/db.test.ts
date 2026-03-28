@@ -185,16 +185,16 @@ describe("getItems", () => {
       expect(matchLower).toBe(0);
     });
 
-    it("regex metacharacter '.' in search matches any character", async () => {
-      // "." is a valid regex that matches any single character, so it matches all direct children
+    it("regex metacharacter '.' in search is treated as a literal dot", async () => {
+      // "." is escaped so it matches a literal dot, not any character — no items contain a literal dot
       const { total } = await db.getItems(1, 10, "Animals", "name", "asc", ".", false);
 
-      expect(total).toBe(3);
+      expect(total).toBe(0);
     });
 
-    it("invalid regex in search throws", async () => {
-      // An unmatched "(" is an invalid regex and causes a database error
-      await expect(db.getItems(1, 10, "Animals", "name", "asc", "(oo", false)).rejects.toThrow();
+    it("special characters like '(' in search do not throw", async () => {
+      // "(" is escaped so it is treated as a literal character, not an invalid regex
+      await expect(db.getItems(1, 10, "Animals", "name", "asc", "(oo", false)).resolves.toMatchObject({ total: 0 });
     });
   });
 
