@@ -1,6 +1,7 @@
 import type { SortingState } from "@tanstack/react-table";
 
 import { useGetApi } from "#api/taxonomy";
+import { AppTheme } from "#app-theme";
 import { DataTable } from "#components/data-table";
 import { Checkbox } from "#components/ui/checkbox";
 import { Input } from "#components/ui/input";
@@ -80,9 +81,12 @@ export function Taxonomy() {
             setPage(1);
           }}
         />
-        <header className="mb-8 mt-6">
-          <h1 className="text-2xl font-semibold tracking-tight">Taxonomy</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
+        <header className="mb-8 mt-6 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Taxonomy</h1>
+            <p className="mt-1 text-sm text-muted-foreground">Browse and search taxonomy items</p>
+          </div>
+          <AppTheme />
         </header>
         <search className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-4">
           <div className="flex flex-col gap-2">
