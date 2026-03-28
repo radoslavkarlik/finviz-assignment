@@ -8,13 +8,12 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 
-export const TAXONOMY_PAGE_SIZE = 3;
-
 export function useTaxonomyTable(
   data: Array<TaxonomyTreeItemResponse>,
   sorting: SortingState,
   onSortingChange: OnChangeFn<SortingState>,
   page: number,
+  pageSize: number,
   total: number,
   subfolders: boolean,
   currentLevel: string,
@@ -26,7 +25,7 @@ export function useTaxonomyTable(
     state: {
       pagination: {
         pageIndex: page - 1,
-        pageSize: TAXONOMY_PAGE_SIZE,
+        pageSize,
       },
       sorting,
     },

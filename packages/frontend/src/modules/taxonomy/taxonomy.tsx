@@ -8,12 +8,13 @@ import { Label } from "#components/ui/label";
 import { Skeleton } from "#components/ui/skeleton";
 import { TaxonomyBreadcrumbs } from "#modules/taxonomy/taxonomy-breadcrumbs";
 import { TaxonomyColumnId } from "#modules/taxonomy/taxonomy-columns";
-import { TAXONOMY_PAGE_SIZE, useTaxonomyTable } from "#modules/taxonomy/use-taxonomy-table";
+import { useTaxonomyTable } from "#modules/taxonomy/use-taxonomy-table";
 import { useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 // just for demonstration purposes, to simulate a slow API response
 const RESPONSE_DELAY = import.meta.env.DEV ? 500 : 0;
+const TAXONOMY_PAGE_SIZE = 10;
 
 export function Taxonomy() {
   const [searchInput, setSearchInput] = useState("");
@@ -23,6 +24,7 @@ export function Taxonomy() {
     { id: TaxonomyColumnId.Name, desc: false },
   ]);
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(TAXONOMY_PAGE_SIZE);
 
   const [currentLevel, setCurrentLevel] = useState("");
 
@@ -39,7 +41,7 @@ export function Taxonomy() {
       sortDir: sortParams.desc ? "desc" : "asc",
     }),
     page,
-    offset: TAXONOMY_PAGE_SIZE,
+    offset: pageSize,
     search,
     ...(search && { subfolders }),
     delay: RESPONSE_DELAY,
@@ -53,6 +55,7 @@ export function Taxonomy() {
     sorting,
     setSorting,
     page,
+    pageSize,
     total,
     !!search && subfolders,
     currentLevel,
@@ -101,21 +104,35 @@ export function Taxonomy() {
               Search subitems
             </Label>
           </div>
-          <div className="flex items-center h-9">
+          <div className="flex items-center gap-3 h-9">
             {total > 0 && (
               <p className="text-sm text-muted-foreground whitespace-nowrap">
                 {total.toLocaleString()} item{total !== 1 ? "s" : ""}
               </p>
             )}
             {isLoading && <Skeleton className="h-4 w-36" />}
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setPage(1);
+              }}
+              className="h-9 rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm text-muted-foreground outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 cursor-pointer"
+            >
+              {[3, 10, 25, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  {size} / page
+                </option>
+              ))}
+            </select>
           </div>
         </search>
         <DataTable
           table={table}
           page={page}
-          pageCount={Math.ceil(total / TAXONOMY_PAGE_SIZE)}
+          pageCount={Math.ceil(total / pageSize)}
           isLoading={isLoading}
-          skeletonRows={TAXONOMY_PAGE_SIZE}
+          skeletonRows={pageSize}
           onPageChange={setPage}
           isDisabled={(row) => !row.size}
           onRowClick={(row) => {
