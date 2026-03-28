@@ -3,10 +3,22 @@ import express from "express";
 import { readFileSync } from "fs";
 import { join } from "path";
 import swaggerUi from "swagger-ui-express";
+import { z } from "zod";
 
 import type { TaxonomyFlatItem, TaxonomyTreeItemResponse } from "./type";
 
 import { constructTree } from "./construct-tree";
+
+const querySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  offset: z.coerce.number().int().positive().default(20),
+  search: z.string().trim().default(""),
+  subfolders: z.enum(["true", "false"]).default("false").transform((v) => v === "true"),
+  delay: z.coerce.number().int().min(0).default(0),
+  parent: z.string().optional(),
+  sortBy: z.enum(["name", "size", "subpath"]).default("name"),
+  sortDir: z.enum(["asc", "desc"]).default("asc"),
+});
 
 const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
@@ -23,14 +35,13 @@ app.get("/swagger.json", (_req, res) => {
 });
 
 app.get("/api", async (req, res) => {
-  const page = parseInt((req.query.page as string) ?? "1", 10);
-  const offset = parseInt((req.query.offset as string) ?? "20", 10);
-  const search = (req.query.search as string)?.trim() ?? "";
-  const subfolders = req.query.subfolders === "true";
-  const delay = parseInt((req.query.delay as string) ?? "0", 10);
-  const parent = req.query.parent as string | undefined;
-  const sortBy = (req.query.sortBy as string) ?? "name";
-  const sortDir = (req.query.sortDir as string) === "desc" ? -1 : 1;
+  const parsed = querySchema.safeParse(req.query);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues });
+  }
+
+  const { page, offset, search, subfolders, delay, parent, sortBy } = parsed.data;
+  const sortDir = parsed.data.sortDir === "desc" ? -1 : 1;
 
   const start = (page - 1) * offset;
   const subItems = parent ? data.filter((item) => item.name.startsWith(parent)) : data;
