@@ -4,17 +4,28 @@ import { formatTaxonomyBytes } from "#lib/format-taxonomy-size";
 import { createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
 
+export const TaxonomyColumnId = {
+  Name: "name",
+  Size: "size",
+  Subpath: "subpath",
+} as const;
+
 const columnHelper = createColumnHelper<TaxonomyTreeItemResponse>();
 
 export function useTaxonomyColumns(subfolders: boolean, currentLevel: string) {
   return useMemo(() => {
     const name = columnHelper.accessor("name", {
+      id: TaxonomyColumnId.Name,
       header: "Name",
+      enableSorting: true,
       cell: ({ getValue }) => getValue() ?? "—",
     });
 
     const subpath = columnHelper.accessor("fullName", {
+      id: TaxonomyColumnId.Subpath,
       header: "Subpath",
+      enableSorting: true,
+      sortDescFirst: false,
       cell: ({ getValue, row }) => {
         const fullName = getValue();
 
@@ -32,7 +43,11 @@ export function useTaxonomyColumns(subfolders: boolean, currentLevel: string) {
     });
 
     const size = columnHelper.accessor("size", {
-      header: () => <div className="text-right">Size</div>,
+      id: TaxonomyColumnId.Size,
+      header: "Size",
+      meta: { align: "right" },
+      enableSorting: true,
+      sortDescFirst: false,
       cell: ({ row }) => (
         <div className="text-right tabular-nums">{formatTaxonomyBytes(row.original.size)}</div>
       ),

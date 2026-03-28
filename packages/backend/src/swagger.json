@@ -51,6 +51,18 @@
             "in": "query",
             "description": "Filter items to those whose name starts with this prefix",
             "schema": { "type": "string" }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Property to sort by",
+            "schema": { "type": "string", "enum": ["name", "size", "subpath"], "default": "name" }
+          },
+          {
+            "name": "sortDir",
+            "in": "query",
+            "description": "Sort direction",
+            "schema": { "type": "string", "enum": ["asc", "desc"], "default": "asc" }
           }
         ],
         "responses": {

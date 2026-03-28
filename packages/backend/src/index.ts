@@ -29,6 +29,8 @@ app.get("/api", async (req, res) => {
   const subfolders = req.query.subfolders === "true";
   const delay = parseInt((req.query.delay as string) ?? "0", 10);
   const parent = req.query.parent as string | undefined;
+  const sortBy = (req.query.sortBy as string) ?? "name";
+  const sortDir = (req.query.sortDir as string) === "desc" ? -1 : 1;
 
   const start = (page - 1) * offset;
   const subItems = parent ? data.filter((item) => item.name.startsWith(parent)) : data;
@@ -40,6 +42,8 @@ app.get("/api", async (req, res) => {
   const searchTrimmed = search.trim().toLowerCase();
 
   if (subfolders && searchTrimmed) {
+    const rootName = subItems[0].name ?? "";
+
     const matchedItems = subItems.filter((item) => {
       if (item.name === parent) {
         return false;
@@ -50,7 +54,23 @@ app.get("/api", async (req, res) => {
       return leafName.toLowerCase().includes(searchTrimmed);
     });
 
-    const paginatedItems = matchedItems
+    const sortedMatchedItems = [...matchedItems].sort((a, b) => {
+      let aVal: string | number;
+      let bVal: string | number;
+      if (sortBy === "size") {
+        aVal = a.size;
+        bVal = b.size;
+      } else if (sortBy === "subpath") {
+        aVal = a.name.split(" > ").slice(1, -1).join(" > ").toLowerCase();
+        bVal = b.name.split(" > ").slice(1, -1).join(" > ").toLowerCase();
+      } else {
+        aVal = (a.name.split(" > ").at(-1) ?? a.name).toLowerCase();
+        bVal = (b.name.split(" > ").at(-1) ?? b.name).toLowerCase();
+      }
+      return aVal < bVal ? -sortDir : aVal > bVal ? sortDir : 0;
+    });
+
+    const paginatedItems = sortedMatchedItems
       .slice(start, start + offset)
       .map<TaxonomyTreeItemResponse>((item) => ({
         name: item.name.split(" > ").at(-1) ?? item.name,
@@ -58,9 +78,7 @@ app.get("/api", async (req, res) => {
         size: item.size,
       }));
 
-    const rootName = constructTree(subItems)?.name ?? "";
-
-    return res.json({ name: rootName, items: paginatedItems, total: matchedItems.length });
+    return res.json({ name: rootName, items: paginatedItems, total: sortedMatchedItems.length });
   }
 
   const itemTree = constructTree(subItems);
@@ -69,9 +87,15 @@ app.get("/api", async (req, res) => {
     return res.json(null);
   }
 
-  const searchedItems = searchTrimmed
+  const filteredItems = searchTrimmed
     ? itemTree.children.filter((item) => item.name.toLowerCase().includes(searchTrimmed))
     : itemTree.children;
+
+  const searchedItems = [...filteredItems].sort((a, b) => {
+    const aVal = sortBy === "size" ? a.size : a.name.toLowerCase();
+    const bVal = sortBy === "size" ? b.size : b.name.toLowerCase();
+    return aVal < bVal ? -sortDir : aVal > bVal ? sortDir : 0;
+  });
 
   const paginatedItems =
     searchedItems.slice(start, start + offset).map<TaxonomyTreeItemResponse>((item) => ({

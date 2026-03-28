@@ -5,6 +5,8 @@
  * API for browsing and searching taxonomy items
  * OpenAPI spec version: 1.0.0
  */
+import type { GetApiSortBy } from './getApiSortBy';
+import type { GetApiSortDir } from './getApiSortDir';
 
 export type GetApiParams = {
 /**
@@ -31,4 +33,12 @@ subfolders?: boolean;
  * Filter items to those whose name starts with this prefix
  */
 parent?: string;
+/**
+ * Property to sort by
+ */
+sortBy?: GetApiSortBy;
+/**
+ * Sort direction
+ */
+sortDir?: GetApiSortDir;
 };

@@ -7,5 +7,7 @@
  */
 
 export * from './getApiParams';
+export * from './getApiSortBy';
+export * from './getApiSortDir';
 export * from './taxonomyResponse';
 export * from './taxonomyTreeItemResponse';

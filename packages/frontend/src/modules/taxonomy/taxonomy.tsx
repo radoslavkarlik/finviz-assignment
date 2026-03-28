@@ -1,3 +1,5 @@
+import type { SortingState } from "@tanstack/react-table";
+
 import { useGetApi } from "#api/taxonomy";
 import { DataTable } from "#components/data-table";
 import { Checkbox } from "#components/ui/checkbox";
@@ -5,6 +7,7 @@ import { Input } from "#components/ui/input";
 import { Label } from "#components/ui/label";
 import { Skeleton } from "#components/ui/skeleton";
 import { TaxonomyBreadcrumbs } from "#modules/taxonomy/taxonomy-breadcrumbs";
+import { TaxonomyColumnId } from "#modules/taxonomy/taxonomy-columns";
 import { TAXONOMY_PAGE_SIZE, useTaxonomyTable } from "#modules/taxonomy/use-taxonomy-table";
 import { useMemo, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -16,6 +19,9 @@ export function Taxonomy() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [subfolders, setSubfolders] = useState(false);
+  const [sorting, setSorting] = useState<SortingState>([
+    { id: TaxonomyColumnId.Name, desc: false },
+  ]);
   const [page, setPage] = useState(1);
 
   const [currentLevel, setCurrentLevel] = useState("");
@@ -25,7 +31,13 @@ export function Taxonomy() {
     setPage(1);
   }, 300);
 
+  const sortParams = sorting[0];
+
   const { data, isLoading } = useGetApi({
+    ...(sortParams && {
+      sortBy: sortParams.id as "name" | "size" | "subpath",
+      sortDir: sortParams.desc ? "desc" : "asc",
+    }),
     page,
     offset: TAXONOMY_PAGE_SIZE,
     search,
@@ -36,7 +48,15 @@ export function Taxonomy() {
 
   const items = useMemo(() => data?.data.items ?? [], [data]);
   const total = data?.data.total ?? 0;
-  const table = useTaxonomyTable(items, page, total, !!search && subfolders, currentLevel);
+  const table = useTaxonomyTable(
+    items,
+    sorting,
+    setSorting,
+    page,
+    total,
+    !!search && subfolders,
+    currentLevel,
+  );
 
   const path = currentLevel ? currentLevel.split(" > ") : [data?.data.name ?? ""];
 

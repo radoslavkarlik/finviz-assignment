@@ -1,3 +1,4 @@
+import { cn } from "#components/lib/utils";
 import { Skeleton } from "#components/ui/skeleton";
 import {
   Table,
@@ -11,6 +12,7 @@ import {
   TableRow,
 } from "#components/ui/table";
 import { flexRender, type Table as TableType } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
 type Props<TData> = {
   readonly table: TableType<TData>;
@@ -41,11 +43,53 @@ export function DataTable<TData>({
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} colSpan={header.colSpan}>
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const canSort = header.column.getCanSort();
+                const sorted = header.column.getIsSorted();
+
+                const { meta } = header.column.columnDef;
+                const alignRight = meta?.align === "right";
+
+                return (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    onClick={
+                      canSort
+                        ? (e) => {
+                            header.column.getToggleSortingHandler()?.(e);
+                            onPageChange?.(1);
+                          }
+                        : undefined
+                    }
+                    className={cn(
+                      canSort && "cursor-pointer select-none",
+                      canSort && !sorted && "text-muted-foreground",
+                      alignRight && "text-right",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1",
+                        alignRight && "w-full justify-end",
+                      )}
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {canSort && (
+                        <>
+                          {sorted === "asc" ? (
+                            <ArrowUp className="size-3.5 shrink-0" />
+                          ) : sorted === "desc" ? (
+                            <ArrowDown className="size-3.5 shrink-0" />
+                          ) : (
+                            <ArrowUpDown className="size-3.5 shrink-0 text-muted-foreground/50" />
+                          )}
+                        </>
+                      )}
+                    </span>
+                  </TableHead>
+                );
+              })}
             </TableRow>
           ))}
         </TableHeader>
