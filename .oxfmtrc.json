@@ -1,6 +1,11 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["packages/frontend/src/api/**/*", "swagger.json", "parsed.json"],
+  "ignorePatterns": [
+    "packages/frontend/src/api/**/*",
+    "swagger.json",
+    "parsed.json",
+    "**/dist/**/*"
+  ],
   "sortImports": {
     "groups": [
       "type-import",

@@ -15,7 +15,7 @@
     "ts": "tsc -b --noEmit",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.4.2",

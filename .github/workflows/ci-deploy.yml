@@ -1,0 +1,61 @@
+name: FinViz Assignment CI/CD
+on:
+  push:
+    branches: [main]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: Install Playwright Browsers
+        run: pnpm dlx playwright install --with-deps chromium
+
+      - name: Frontend Check
+        run: |
+          cd packages/frontend
+          pnpm install
+          pnpm fmt:check
+          pnpm lint
+          pnpm ts
+          pnpm test:browser
+      
+      - name: Backend Check
+        run: |
+          cd packages/backend
+          pnpm install
+          pnpm fmt:check
+          pnpm lint
+          pnpm ts
+          pnpm test
+
+  deploy:
+    needs: quality-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+ 
+      - name: "Install Rayilway CLI"
+        run: npm i -g @railway/cli
+      
+      - name: Deploy Frontend
+        run: railway up --service @finviz-assignment/frontend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy Backend
+        run: railway up --service @finviz-assignment/backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
