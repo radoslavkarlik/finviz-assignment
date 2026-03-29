@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/radek/finviz-assignment/packages -type f -not -path */node_modules/*)"
+    ]
+  }
+}

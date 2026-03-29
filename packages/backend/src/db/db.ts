@@ -22,6 +22,10 @@ export class Db implements Disposable {
     await this.close();
   }
 
+  public get client() {
+    return this.#client;
+  }
+
   public async init(): Promise<void> {
     if (this.#initialized) {
       return;

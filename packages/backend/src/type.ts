@@ -10,3 +10,7 @@ export type TaxonomyDbQueryItem = TaxonomyDbItem & {
 export type TaxonomyItemResponse = TaxonomyDbQueryItem & {
   readonly fullName: string;
 };
+
+export type TaxonomyTreeItem = TaxonomyDbItem & {
+  readonly children: Array<TaxonomyTreeItem>;
+};

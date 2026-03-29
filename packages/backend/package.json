@@ -16,7 +16,8 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "test": "vitest run",
-    "parse:taxonomy": "tsx scripts/parse.ts"
+    "parse:taxonomy": "tsx scripts/parse.ts",
+    "construct:tree": "tsx scripts/construct-tree.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.4.2",
