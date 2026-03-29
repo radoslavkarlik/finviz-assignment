@@ -14,5 +14,5 @@ export interface TaxonomyResponse {
   /** Total number of children under the root/parent node */
   total?: number;
   /** Query execution time in milliseconds */
-  performance?: string;
+  performance?: number;
 }

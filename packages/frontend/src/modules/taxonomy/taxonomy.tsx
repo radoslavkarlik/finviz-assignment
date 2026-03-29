@@ -118,9 +118,7 @@ export function Taxonomy() {
                 className="text-sm whitespace-nowrap text-muted-foreground"
               >
                 {total.toLocaleString()} item{total !== 1 ? "s" : ""}
-                {performance && (
-                  <span className="ml-2 text-xs">({Number(performance).toFixed(0)}ms)</span>
-                )}
+                {performance && <span className="ml-2 text-xs">({performance.toFixed(0)}ms)</span>}
               </p>
             )}
             <select

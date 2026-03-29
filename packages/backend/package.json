@@ -15,7 +15,8 @@
     "ts": "tsc -b --noEmit",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "test": "vitest run"
+    "test": "vitest run",
+    "parse:taxonomy": "tsx scripts/parse.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.4.2",

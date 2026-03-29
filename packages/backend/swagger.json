@@ -109,7 +109,7 @@
             "description": "Total number of children under the root/parent node"
           },
           "performance": {
-            "type": "string",
+            "type": "number",
             "description": "Query execution time in milliseconds"
           }
         }

@@ -5,7 +5,7 @@ import {
   BreadcrumbSeparator,
 } from "#components/ui/breadcrumb";
 import { Skeleton } from "#components/ui/skeleton";
-import { Fragment } from "react/jsx-runtime";
+import { Fragment } from "react";
 
 type Props = {
   readonly breadcrumbs: ReadonlyArray<string>;
